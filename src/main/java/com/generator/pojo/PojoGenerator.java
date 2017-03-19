@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class PojoGenerator {
@@ -35,12 +36,20 @@ public class PojoGenerator {
 
 	private Set<Object> generateObjectSetFromMap(Map<String, Set<Object>> qualifiedClassNameAndObjectsMap,
 			Class clazz) {
-		return generateObjectSetFromMap(qualifiedClassNameAndObjectsMap, clazz, new HashSet<String>(),
-				new HashSet<Object>());
+		Set<Object> objectSet = null;
+		try {
+			objectSet = generateObjectSetFromMap(qualifiedClassNameAndObjectsMap, clazz, new HashSet<String>(),
+					new HashSet<Object>());
+		} catch (Exception e) {
+			// TODO : Fix Exception handling
+		}
+
+		return objectSet;
 	}
 
 	private Set<Object> generateObjectSetFromMap(Map<String, Set<Object>> qualifiedClassNameAndObjectsMap, Class clazz,
-			HashSet<String> processedFieldsSet, Set<Object> generatedObjectsSet) {
+			HashSet<String> processedFieldsSet, Set<Object> generatedObjectsSet)
+			throws InstantiationException, IllegalAccessException {
 		Set<String> fieldSet = getCompleteFieldSet(clazz);
 
 		String nextField = getNextFieldToProcess(fieldSet, processedFieldsSet);
@@ -48,7 +57,8 @@ public class PojoGenerator {
 		if (nextField == null) {
 			return generatedObjectsSet;
 		}
-		Set<Object> nextFieldInclusiveObjectSet = includeFieldAndGeneraterObjects(nextField, generatedObjectsSet);
+		Set<Object> nextFieldInclusiveObjectSet = includeFieldAndGenerateObjects(nextField,
+				qualifiedClassNameAndObjectsMap, generatedObjectsSet, clazz);
 
 		processedFieldsSet.add(nextField);
 
@@ -56,8 +66,42 @@ public class PojoGenerator {
 				nextFieldInclusiveObjectSet);
 	}
 
-	private Set<Object> includeFieldAndGeneraterObjects(String nextField, Set<Object> generatedObjectsSet) {
+	private Set<Object> includeFieldAndGenerateObjects(String currentField,
+			Map<String, Set<Object>> classNameAndObjectsMap, Set<Object> generatedObjectsSet, Class clazz)
+			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+			NoSuchMethodException, SecurityException {
+		Class fieldClass = getMethodParamClass(clazz, "set" + currentField);
 
+		Set<Object> currentFieldValueSet = classNameAndObjectsMap.get(fieldClass.getName());
+
+		Set<Object> responseSet = new HashSet<>();
+
+		if (generatedObjectsSet.size() == 0) {
+			generatedObjectsSet.add(clazz.newInstance());
+		}
+
+		for (Object fieldValue : currentFieldValueSet) {
+			for (Object clazzInstance : generatedObjectsSet) {
+				Object tempClazzInstance = deepClone(clazzInstance);
+
+				Method method = clazz.getMethod("set" + currentField, fieldClass);
+				method.invoke(tempClazzInstance, fieldValue);
+				responseSet.add(tempClazzInstance);
+
+			}
+		}
+
+		responseSet.addAll(generatedObjectsSet);
+		return responseSet;
+	}
+
+	private Object deepClone(Object clazzInstance) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Class getMethodParamClass(Class clazz, String string) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
