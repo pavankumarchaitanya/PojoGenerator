@@ -1,8 +1,11 @@
 package com.generator.pojo;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.lang.reflect.Method;
 
 public class PojoGenerator {
 	Map<String, Set<Object>> qualifiedClassNameAndObjectsMap;
@@ -54,22 +57,34 @@ public class PojoGenerator {
 	}
 
 	private Set<Object> includeFieldAndGeneraterObjects(String nextField, Set<Object> generatedObjectsSet) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
 	private String getNextFieldToProcess(Set<String> fieldSet, HashSet<String> processedFieldSet) {
-		// TODO Auto-generated method stub
+		if (fieldSet != null && fieldSet.size() > 0) {
+			List<String> nextList = fieldSet.stream().filter(n -> !processedFieldSet.contains(n))
+					.collect(Collectors.toList());
+			if (nextList != null && nextList.size() > 0) {
+				return nextList.get(0);
+			}
+		}
+
 		return null;
 	}
 
 	private Set<String> getCompleteFieldSet(Class clazz) {
-		// TODO Auto-generated method stub
-		return null;
+		Set<String> fieldSet = new HashSet<>();
+		for (Method method : clazz.getMethods()) {
+			if (method.getName().startsWith("set") && method.getParameterTypes().length == 1) {
+				fieldSet.add(method.getName().substring(2));
+			}
+		}
+		return fieldSet;
 	}
 
 	private Set<String> getQualifiedClassNamesOfMemberVariables(Class clazz) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 }
