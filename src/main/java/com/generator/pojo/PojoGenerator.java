@@ -26,13 +26,18 @@ public class PojoGenerator {
 			}
 		}
 
-		objectSet = generateObjectSetFromMap(qualifiedClassNameAndObjectsMap, clazz, new HashSet<String>(),
-				new HashSet<Object>());
+		objectSet = generateObjectSetFromMap(qualifiedClassNameAndObjectsMap, clazz);
 		qualifiedClassNameAndObjectsMap.put(clazz.getName(), objectSet);
 	}
 
+	private Set<Object> generateObjectSetFromMap(Map<String, Set<Object>> qualifiedClassNameAndObjectsMap,
+			Class clazz) {
+		return generateObjectSetFromMap(qualifiedClassNameAndObjectsMap, clazz, new HashSet<String>(),
+				new HashSet<Object>());
+	}
+
 	private Set<Object> generateObjectSetFromMap(Map<String, Set<Object>> qualifiedClassNameAndObjectsMap2, Class clazz,
-			HashSet<String> hashSet, HashSet<Object> hashSet2) {
+			HashSet<String> processedFieldSet, HashSet<Object> generatedObjectsSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
