@@ -36,8 +36,34 @@ public class PojoGenerator {
 				new HashSet<Object>());
 	}
 
-	private Set<Object> generateObjectSetFromMap(Map<String, Set<Object>> qualifiedClassNameAndObjectsMap2, Class clazz,
-			HashSet<String> processedFieldSet, HashSet<Object> generatedObjectsSet) {
+	private Set<Object> generateObjectSetFromMap(Map<String, Set<Object>> qualifiedClassNameAndObjectsMap, Class clazz,
+			HashSet<String> processedFieldsSet, Set<Object> generatedObjectsSet) {
+		Set<String> fieldSet = getCompleteFieldSet(clazz);
+
+		String nextField = getNextFieldToProcess(fieldSet, processedFieldsSet);
+
+		if (nextField == null) {
+			return generatedObjectsSet;
+		}
+		Set<Object> nextFieldInclusiveObjectSet = includeFieldAndGeneraterObjects(nextField, generatedObjectsSet);
+
+		processedFieldsSet.add(nextField);
+
+		return generateObjectSetFromMap(qualifiedClassNameAndObjectsMap, clazz, processedFieldsSet,
+				nextFieldInclusiveObjectSet);
+	}
+
+	private Set<Object> includeFieldAndGeneraterObjects(String nextField, Set<Object> generatedObjectsSet) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String getNextFieldToProcess(Set<String> fieldSet, HashSet<String> processedFieldSet) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Set<String> getCompleteFieldSet(Class clazz) {
 		// TODO Auto-generated method stub
 		return null;
 	}
