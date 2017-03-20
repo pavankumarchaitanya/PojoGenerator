@@ -6,4 +6,11 @@
   <version>1.0-SNAPSHOT</version>
   <name>Archetype - PojoGenerator</name>
   <url>http://maven.apache.org</url>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.slf4j</groupId>
+  		<artifactId>slf4j-api</artifactId>
+  		<version>RELEASE</version>
+  	</dependency>
+  </dependencies>
 </project>

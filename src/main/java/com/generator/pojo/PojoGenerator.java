@@ -5,12 +5,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class PojoGenerator {
 	Map<String, Set<Object>> qualifiedClassNameAndObjectsMap;
+	public static Logger logger = org.slf4j.LoggerFactory.getLogger(PojoGenerator.class);
 
 	public void buildMap(Class clazz) throws ClassNotFoundException {
 
@@ -58,8 +66,10 @@ public class PojoGenerator {
 		if (nextField == null) {
 			return generatedObjectsSet;
 		}
-		Set<Object> nextFieldInclusiveObjectSet = includeFieldAndGenerateObjects(nextField,
-				qualifiedClassNameAndObjectsMap, generatedObjectsSet, clazz);
+		Set<Object> nextFieldInclusiveObjectSet;
+
+		nextFieldInclusiveObjectSet = includeFieldAndGenerateObjects(nextField, qualifiedClassNameAndObjectsMap,
+				generatedObjectsSet, clazz);
 
 		processedFieldsSet.add(nextField);
 
@@ -68,30 +78,30 @@ public class PojoGenerator {
 	}
 
 	private Set<Object> includeFieldAndGenerateObjects(String currentField,
-			Map<String, Set<Object>> classNameAndObjectsMap, Set<Object> generatedObjectsSet, Class clazz)
-			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, SecurityException {
+			Map<String, Set<Object>> classNameAndObjectsMap, Set<Object> generatedObjectsSet, Class clazz) {
 		Class fieldClass = getMethodParamClass(clazz, "set" + currentField);
 
 		Set<Object> currentFieldValueSet = classNameAndObjectsMap.get(fieldClass.getName());
 
 		Set<Object> responseSet = new HashSet<>();
-
-		if (generatedObjectsSet.size() == 0) {
-			generatedObjectsSet.add(clazz.newInstance());
-		}
-
-		for (Object fieldValue : currentFieldValueSet) {
-			for (Object clazzInstance : generatedObjectsSet) {
-				Object tempClazzInstance = deepClone(clazzInstance);
-
-				Method method = clazz.getMethod("set" + currentField, fieldClass);
-				method.invoke(tempClazzInstance, fieldValue);
-				responseSet.add(tempClazzInstance);
-
+		try {
+			if (generatedObjectsSet.size() == 0) {
+				generatedObjectsSet.add(clazz.newInstance());
 			}
-		}
 
+			for (Object fieldValue : currentFieldValueSet) {
+				for (Object clazzInstance : generatedObjectsSet) {
+					Object tempClazzInstance = deepClone(clazzInstance);
+
+					Method method = clazz.getMethod("set" + currentField, fieldClass);
+					method.invoke(tempClazzInstance, fieldValue);
+					responseSet.add(tempClazzInstance);
+
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Exception occurred while generating objects", e);
+		}
 		responseSet.addAll(generatedObjectsSet);
 		return responseSet;
 	}
@@ -119,8 +129,20 @@ public class PojoGenerator {
 		return newObject;
 	}
 
-	private Object serializableDeepClone(Object fieldValueObject) {
-		return null;
+	private Object serializableDeepClone(Object originalObj) {
+		Object obj = null;
+		try {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutputStream out = new ObjectOutputStream(bos);
+			out.writeObject(originalObj);
+			out.flush();
+			out.close();
+			ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
+			obj = in.readObject();
+		} catch (Exception e) {
+			logger.error("Exception Occurred while cloning [{}]", e);
+		}
+		return obj;
 	}
 
 	private Class getMethodParamClass(Class clazz, String string) {
