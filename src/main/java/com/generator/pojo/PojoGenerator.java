@@ -1,13 +1,5 @@
 package com.generator.pojo;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -16,6 +8,13 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors; 
+
+import org.slf4j.Logger;
 
 public class PojoGenerator {
 	Map<String, Set<Object>> qualifiedClassNameAndObjectsMap;
@@ -24,6 +23,7 @@ public class PojoGenerator {
 	public PojoGenerator() {
 		init();
 	}
+
 	public void init() {
 		Set<Object> stringCombinationObjectSet = new HashSet<Object>();
 		stringCombinationObjectSet.add("test");
