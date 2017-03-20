@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -95,8 +96,30 @@ public class PojoGenerator {
 		return responseSet;
 	}
 
-	private Object deepClone(Object clazzInstance) {
-		// TODO Auto-generated method stub
+	private Object deepClone(Object originalObj) throws IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
+
+		Class clazz = originalObj.getClass();
+		Object newObject = clazz.newInstance();
+		for (Method m : clazz.getMethods()) {
+			if (m.getName().startsWith("set")) {
+				Method getterMethod = clazz.getDeclaredMethod("get" + (m.getName().substring(2)));
+				Object fieldValueObject = getterMethod.invoke(originalObj);
+				if (fieldValueObject == null)
+					continue;
+
+				if (Serializable.class.isAssignableFrom(fieldValueObject.getClass())) {
+					m.invoke(newObject, serializableDeepClone(fieldValueObject));
+				} else {
+					m.invoke(newObject, deepClone(fieldValueObject));
+				}
+			}
+		}
+
+		return newObject;
+	}
+
+	private Object serializableDeepClone(Object fieldValueObject) {
 		return null;
 	}
 
