@@ -13,12 +13,23 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class PojoGenerator {
 	Map<String, Set<Object>> qualifiedClassNameAndObjectsMap;
 	public static Logger logger = org.slf4j.LoggerFactory.getLogger(PojoGenerator.class);
+
+	public PojoGenerator() {
+		init();
+	}
+	public void init() {
+		Set<Object> stringCombinationObjectSet = new HashSet<Object>();
+		stringCombinationObjectSet.add("test");
+		stringCombinationObjectSet.add(null);
+		qualifiedClassNameAndObjectsMap.put(String.class.getName(), stringCombinationObjectSet);
+	}
 
 	public void buildMap(Class clazz) throws ClassNotFoundException {
 
@@ -145,8 +156,12 @@ public class PojoGenerator {
 		return obj;
 	}
 
-	private Class getMethodParamClass(Class clazz, String string) {
-		// TODO Auto-generated method stub
+	private Class getMethodParamClass(Class clazz, String currentFieldMethodName) {
+		for (Method m : clazz.getDeclaredMethods()) {
+			if (m.getName().equals(currentFieldMethodName)) {
+				return m.getParameterTypes()[0];
+			}
+		}
 		return null;
 	}
 
@@ -173,7 +188,10 @@ public class PojoGenerator {
 	}
 
 	private Set<String> getQualifiedClassNamesOfMemberVariables(Class clazz) {
-
-		return null;
+		Set<String> classNamesSet = new HashSet<>();
+		for (Field field : clazz.getFields()) {
+			classNamesSet.add(field.getType().getName());
+		}
+		return classNamesSet;
 	}
 }
