@@ -8,11 +8,12 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors; 
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 
@@ -28,6 +29,7 @@ public class PojoGenerator {
 		Set<Object> stringCombinationObjectSet = new HashSet<Object>();
 		stringCombinationObjectSet.add("test");
 		stringCombinationObjectSet.add(null);
+		qualifiedClassNameAndObjectsMap = new HashMap<>();
 		qualifiedClassNameAndObjectsMap.put(String.class.getName(), stringCombinationObjectSet);
 	}
 
@@ -124,7 +126,7 @@ public class PojoGenerator {
 		Object newObject = clazz.newInstance();
 		for (Method m : clazz.getMethods()) {
 			if (m.getName().startsWith("set")) {
-				Method getterMethod = clazz.getDeclaredMethod("get" + (m.getName().substring(2)));
+				Method getterMethod = clazz.getDeclaredMethod("get" + (m.getName().substring(3)));
 				Object fieldValueObject = getterMethod.invoke(originalObj);
 				if (fieldValueObject == null)
 					continue;
@@ -181,7 +183,7 @@ public class PojoGenerator {
 		Set<String> fieldSet = new HashSet<>();
 		for (Method method : clazz.getMethods()) {
 			if (method.getName().startsWith("set") && method.getParameterTypes().length == 1) {
-				fieldSet.add(method.getName().substring(2));
+				fieldSet.add(method.getName().substring(3));
 			}
 		}
 		return fieldSet;
@@ -189,8 +191,11 @@ public class PojoGenerator {
 
 	private Set<String> getQualifiedClassNamesOfMemberVariables(Class clazz) {
 		Set<String> classNamesSet = new HashSet<>();
-		for (Field field : clazz.getFields()) {
-			classNamesSet.add(field.getType().getName());
+		for (Method method : clazz.getMethods()) {
+			if (method.getName().startsWith("set") && method.getParameterTypes().length == 1) {
+				classNamesSet.add(method.getParameterTypes()[0].getName());
+
+			}
 		}
 		return classNamesSet;
 	}
