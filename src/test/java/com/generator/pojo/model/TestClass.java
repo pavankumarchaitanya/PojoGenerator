@@ -5,6 +5,7 @@ public class TestClass {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((componentTestClass == null) ? 0 : componentTestClass.hashCode());
 		result = prime * result + ((field1 == null) ? 0 : field1.hashCode());
 		result = prime * result + ((field2 == null) ? 0 : field2.hashCode());
 		result = prime * result + ((field3 == null) ? 0 : field3.hashCode());
@@ -20,6 +21,11 @@ public class TestClass {
 		if (getClass() != obj.getClass())
 			return false;
 		TestClass other = (TestClass) obj;
+		if (componentTestClass == null) {
+			if (other.componentTestClass != null)
+				return false;
+		} else if (!componentTestClass.equals(other.componentTestClass))
+			return false;
 		if (field1 == null) {
 			if (other.field1 != null)
 				return false;
@@ -40,11 +46,22 @@ public class TestClass {
 
 	@Override
 	public String toString() {
-		return "TestClass [field2=" + field2 + ", field1=" + field1 + ", field3=" + field3 + "]";
+		return "TestClass [field2=" + field2 + ", field1=" + field1 + ", field3=" + field3 + ", componentTestClass="
+				+ componentTestClass + "]";
 	}
+
 	private String field2;
 	private String field1;
 	private String field3;
+	private ComponentTestClass componentTestClass;
+
+	public ComponentTestClass getComponentTestClass() {
+		return componentTestClass;
+	}
+
+	public void setComponentTestClass(ComponentTestClass componentTestClass) {
+		this.componentTestClass = componentTestClass;
+	}
 
 	public String getField3() {
 		return field3;
@@ -69,6 +86,5 @@ public class TestClass {
 	public void setField2(String field2) {
 		this.field2 = field2;
 	}
-
 
 }
