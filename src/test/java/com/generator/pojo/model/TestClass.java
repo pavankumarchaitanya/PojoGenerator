@@ -7,6 +7,7 @@ public class TestClass {
 		int result = 1;
 		result = prime * result + ((field1 == null) ? 0 : field1.hashCode());
 		result = prime * result + ((field2 == null) ? 0 : field2.hashCode());
+		result = prime * result + ((field3 == null) ? 0 : field3.hashCode());
 		return result;
 	}
 
@@ -29,15 +30,29 @@ public class TestClass {
 				return false;
 		} else if (!field2.equals(other.field2))
 			return false;
+		if (field3 == null) {
+			if (other.field3 != null)
+				return false;
+		} else if (!field3.equals(other.field3))
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "TestClass [field1=" + field1 + ", field2=" + field2 + "]";
+		return "TestClass [field2=" + field2 + ", field1=" + field1 + ", field3=" + field3 + "]";
+	}
+	private String field2;
+	private String field1;
+	private String field3;
+
+	public String getField3() {
+		return field3;
 	}
 
-	private String field1;
+	public void setField3(String field3) {
+		this.field3 = field3;
+	}
 
 	public String getField1() {
 		return field1;
@@ -55,5 +70,5 @@ public class TestClass {
 		this.field2 = field2;
 	}
 
-	private String field2;
+
 }
