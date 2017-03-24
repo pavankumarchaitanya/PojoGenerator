@@ -3,12 +3,14 @@ package com.generator.pojo;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.generator.pojo.model.Number;
 import com.generator.pojo.model.TestClass;
 import com.generator.pojo.model.TestClassWithDate;
 import com.generator.pojo.model.TestClassWithEnum;
+
 
 public class PojoGeneratorTest {
 
@@ -20,9 +22,9 @@ public class PojoGeneratorTest {
 		Set<Object> objectSet = pojoGenerator.qualifiedClassNameAndObjectsMap.get(TestClass.class.getName());
 		for (Object testClass : objectSet) {
 			TestClass tempTestClass = (TestClass) testClass;
-			System.out.println("TestClass : " + tempTestClass);
+		//	System.out.println("TestClass : " + tempTestClass);
 		}
-		System.out.println();
+		Assert.assertEquals(40,objectSet.size());
 	}
 
 	@Test
@@ -33,9 +35,9 @@ public class PojoGeneratorTest {
 		Set<Object> objectSet = pojoGenerator.qualifiedClassNameAndObjectsMap.get(TestClassWithDate.class.getName());
 		for (Object testClassWithDate : objectSet) {
 			TestClassWithDate tempTestClassWithDate = (TestClassWithDate) testClassWithDate;
-			System.out.println("testClassWithDate : " + tempTestClassWithDate);
+		//	System.out.println("testClassWithDate : " + tempTestClassWithDate);
 		}
-		System.out.println();
+		Assert.assertEquals(40,objectSet.size());
 	}
 
 	@Test
@@ -50,8 +52,8 @@ public class PojoGeneratorTest {
 		Set<Object> objectSet = pojoGenerator.qualifiedClassNameAndObjectsMap.get(TestClassWithEnum.class.getName());
 		for (Object obj : objectSet) {
 			TestClassWithEnum testClassWithEnum = (TestClassWithEnum) obj;
-			System.out.println("testClassWithEnum : " + testClassWithEnum);
+	//		System.out.println("testClassWithEnum : " + testClassWithEnum);
 		}
-		System.out.println();
+		Assert.assertEquals(80,objectSet.size());
 	}
 }
