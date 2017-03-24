@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,8 +30,17 @@ public class PojoGenerator {
 		Set<Object> stringCombinationObjectSet = new HashSet<Object>();
 		stringCombinationObjectSet.add("test");
 		stringCombinationObjectSet.add(null);
+
+		Set<Object> dateCombinationObjectSet = new HashSet<Object>();
+		dateCombinationObjectSet.add(null);
+		dateCombinationObjectSet.add(new Date());
 		qualifiedClassNameAndObjectsMap = new HashMap<>();
 		qualifiedClassNameAndObjectsMap.put(String.class.getName(), stringCombinationObjectSet);
+		qualifiedClassNameAndObjectsMap.put(Date.class.getName(), dateCombinationObjectSet);
+	}
+
+	public <T> void setObjectCombinationsForClass(Class<T> clazz, Set<T> objectSet) {
+		qualifiedClassNameAndObjectsMap.put(clazz.getName(), (Set<Object>) objectSet);
 	}
 
 	public void buildMap(Class clazz) throws ClassNotFoundException {
