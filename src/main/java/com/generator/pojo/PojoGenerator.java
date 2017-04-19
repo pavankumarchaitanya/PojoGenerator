@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -21,7 +20,7 @@ import org.slf4j.Logger;
 public class PojoGenerator {
 	Map<String, Set<Object>> qualifiedClassNameAndObjectsMap;
 	public static Logger logger = org.slf4j.LoggerFactory.getLogger(PojoGenerator.class);
-test
+
 	public PojoGenerator() {
 		init();
 	}
