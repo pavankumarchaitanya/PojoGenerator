@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 public class PojoGenerator {
 	Map<String, Set<Object>> qualifiedClassNameAndObjectsMap;
 	public static Logger logger = org.slf4j.LoggerFactory.getLogger(PojoGenerator.class);
-
+test
 	public PojoGenerator() {
 		init();
 	}
